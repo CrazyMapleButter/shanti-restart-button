@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bot Control</title>
+  <script>
+    async function getStatus() {
+        try {
+          const response = await fetch("http://localhost:5000/status");
+          if (!response.ok) {
+            throw new Error("Failed to fetch status");
+          }
+          const data = await response.json();
+          document.getElementById("status").innerText = data.online ? "Online" : "Offline";
+        } catch (error) {
+          console.error(error);
+          document.getElementById("status").innerText = "Error fetching status";
+        }
+    }
+
+
+    async function restartBot() {
+      const response = await fetch("http://localhost:5000/restart", { method: "POST" });
+      const data = await response.json();
+      alert("Bot is restarting...");
+      getStatus();  // Update status after restart
+    }
+
+    window.onload = getStatus;
+  </script>
+</head>
+<body>
+  <h1>Bot Control</h1>
+  <p>Status: <span id="status">Checking...</span></p>
+  <button onclick="restartBot()">Restart Bot</button>
+</body>
+</html>
